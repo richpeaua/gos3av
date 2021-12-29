@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"errors"
 	"testing"
 	"strings"
 )
@@ -11,22 +10,18 @@ func TestHelloName(t *testing.T) {
 	testScenarios := []struct {
 		name     	 string
 		input 		 string
-		expectedError    error
 	}{
 		{
 			name: "expectedOut",
 			input: "rich",
-			expectedError: nil,
 		},
 		{
 			name: "expectedErrBlank",
 			input: "",
-			expectedError: errors.New("name must not be blank"),
 		},
 		{
 			name: "expectedErrNameLen",
 			input: strings.Repeat("a", 65),
-			expectedError: errors.New("name must be under 64 chars"),
 		},
 	}
 
@@ -44,11 +39,13 @@ func TestHelloName(t *testing.T) {
 			// 1.2 Greeting: expected error - blank
 			if scenario.input == "" && errmsg == nil {
 				t.Errorf("expected blank name error, but got %v", errmsg)
+				return
 			}
 
-			// 1.3 Greeting: expected error - long name
+			// 1.3 Greeting: expected error - name too long
 			if len(scenario.input) > 64 && errmsg == nil {
 				t.Errorf("expected name length error, but got %v", errmsg)
+				return
 			}
 
 		})
