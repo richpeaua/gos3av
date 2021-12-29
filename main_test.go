@@ -2,45 +2,55 @@ package main
 
 import (
 	"fmt"
+	"errors"
 	"testing"
 	"strings"
-	"strconv"
 )
 
 func TestHelloName(t *testing.T) {
 	testScenarios := []struct {
-		name 		 string
-		expectedErrorMsg string	
+		name     	 string
+		input 		 string
+		expectedError    error
 	}{
 		{
-			name: "rich",
+			name: "expectedOut",
+			input: "rich",
+			expectedError: nil,
 		},
 		{
-			name: "",
-			expectedErrorMsg: "name must not be blank",
+			name: "expectedErrBlank",
+			input: "",
+			expectedError: errors.New("name must not be blank"),
 		},
 		{
-			name: strings.Repeat("a", 64),
-			expectedErrorMsg: "name must be under 64 chars",
+			name: "expectedErrNameLen",
+			input: strings.Repeat("a", 65),
+			expectedError: errors.New("name must be under 64 chars"),
 		},
 	}
 
-	for i, scenario := range testScenarios {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
+	for _, scenario := range testScenarios {
+			t.Run(scenario.name, func(t *testing.T) {
 
-			greeting, errmsg := helloName(scenario.name)
+			greeting, errmsg := helloName(scenario.input)
 			
 			// 1.1 Greeting: expected name
-			if want, got := fmt.Sprint("Hello, %s!", scenario.name), greeting; want != got {
-				t.Errorf("expected %s, but got %s", want, got)
+			if want, got := fmt.Sprintf("Hello, %s!", scenario.input), greeting; want != got {
+				t.Errorf("expected `%s`, but got `%s`", want, got)
 				return
 			}
 
-			// 1.2 Greeting: expected errors
-			if want, got := scenario.expectedErrorMsg, errmsg; want != got {
-				t.Errorf("expected error %s, but got %s", want, got)
-				return
+			// 1.2 Greeting: expected error - blank
+			if scenario.input == "" && errmsg == nil {
+				t.Errorf("expected blank name error, but got %v", errmsg)
 			}
+
+			// 1.3 Greeting: expected error - long name
+			if len(scenario.input) > 64 && errmsg == nil {
+				t.Errorf("expected name length error, but got %v", errmsg)
+			}
+
 		})
 	}
 }

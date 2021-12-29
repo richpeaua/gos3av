@@ -1,2 +1,2 @@
 # gos3av
-Golang implementation of my s3av python S3 antirvirus project. It is also uses TDD
+Golang implementation of my s3av python S3 antirvirus project. Utilizing BDD to drive the design and implementations is the primary objective of this project, where the python version was written with minimal, if any, testing.

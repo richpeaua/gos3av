@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
+
+func helloName(n string) (string, error) {
+	greeting := fmt.Sprintf("Hello, %s!", n)
+	return greeting, nil
+}
 
 func main() {
-	fmt.Println("gos3av!")
 }
