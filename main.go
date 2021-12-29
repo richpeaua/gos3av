@@ -18,4 +18,11 @@ func helloName(n string) (string, error) {
 }
 
 func main() {
+	name     := ""
+	greeting, err := helloName(name)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(greeting)
 }
