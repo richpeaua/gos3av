@@ -43,19 +43,23 @@ func (vs VirusScanner) UpdateDB() error {
 		return err
 	}
 
-	args := fmt.Sprintf("--config-file=%s '--datadir=%s",
-				vs.FreshclamConfPath, vs.DBPath)
-	cmd := execCommand("freshclam", args)
+	args := []string{"--config-file=" + vs.FreshclamConfPath, "--datadir=" + vs.DBPath}
+	cmd := execCommand("freshclam", args...)
 
 	log.Info().Str("func", logFuncName).Msg("Downloading clamav virus database files to: " + vs.DBPath)
 
-	_, err = cmd.CombinedOutput()
+	start := time.Now()
+	stdout, err := cmd.CombinedOutput()
+	duration := time.Since(start)
+
+
 	if err != nil {
+		err = fmt.Errorf(string(stdout), err)
 		log.Error().Str("func", logFuncName).AnErr("DbUpdateErr", err)
 		return err
 	}
 
-	log.Info().Str("func", logFuncName).Msg("Database updated")
+	log.Info().Str("func", logFuncName).Msgf("Database updated: %.2f secs", duration.Seconds())
 
 	return nil
 }

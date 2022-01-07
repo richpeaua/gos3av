@@ -127,8 +127,12 @@ func TestFreshclamProc(t *testing.T) {
 		}
 		args = args[1:]
 	}
-	if len(args) == 0 {
+	switch {
+	case len(args) == 0:
 		fmt.Fprintf(os.Stderr, "No command\n")
+		os.Exit(2)
+	case len(args) < 3:
+		fmt.Fprintf(os.Stderr, "Not enough args, need 2\n")
 		os.Exit(2)
 	}
 
