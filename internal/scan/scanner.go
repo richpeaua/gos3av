@@ -26,6 +26,10 @@ func NewVirusScanner() VirusScanner {
 	return VirusScanner{}
 }
 
+// execCommand var which holds a mockable exec.Command function for running the Clamscan and
+// Freshclam cli commands
+var execCommand = exec.Command
+
 // UpdateDB pulls down the latest clamav virus databases
 func (vs VirusScanner) UpdateDB() error {
 	logFuncName := "VirusScanner.UpdateDB"
@@ -63,9 +67,6 @@ func (vs VirusScanner) UpdateDB() error {
 
 	return nil
 }
-
-// execCommand var which holds a mockable exec.Command function for running the Clamscan program
-var execCommand = exec.Command
 
 // ScanFile scans a file at a given filepath and returns the output
 func (vs VirusScanner) ScanFile(fpath string) (string, error) {

@@ -9,39 +9,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Stdout of scan of clean file by TestClamscanProcess
-const testScannerOutputClean = `
-testfiles/clean.txt: OK
-
------------ SCAN SUMMARY -----------
-Known viruses: 8586950
-Engine version: 0.104.1
-Scanned directories: 0
-Scanned files: 1
-Infected files: 0
-Data scanned: 0.00 MB
-Data read: 0.00 MB (ratio 0.00:1)
-Time: 18.165 sec (0 m 18 s)
-Start Date: 2021:12:31 00:07:59
-End Date:   2021:12:31 00:08:17
-`
-// Stdout of scan of infected file by TestClamscanProcess
-const testScannerOutputInfected = `
-testfiles/infected.txt: Win.Test.EICAR_HDB-1 FOUND
-
------------ SCAN SUMMARY -----------
-Known viruses: 8586950
-Engine version: 0.104.1
-Scanned directories: 0
-Scanned files: 1
-Infected files: 1
-Data scanned: 0.00 MB
-Data read: 0.00 MB (ratio 0.00:1)
-Time: 16.342 sec (0 m 16 s)
-Start Date: 2021:12:31 00:09:55
-End Date:   2021:12:31 00:10:12	
-`
-
 var testScenario string
 
 func TestMain(m *testing.M) {
@@ -99,9 +66,9 @@ func TestClamscanProc(t *testing.T) {
 	// behaviour per test scenario
 	switch os.Getenv("TEST_SCENARIO") {
 	case "ExpectedOutClean":
-		fmt.Fprint(os.Stdout, testScannerOutputClean)
+		fmt.Fprint(os.Stdout, "clean file")
 	case "ExpectedOutInfected":
-		fmt.Fprint(os.Stdout, testScannerOutputInfected)
+		fmt.Fprint(os.Stdout, "infected file")
 		os.Exit(1)
 	default:
 		fmt.Fprint(os.Stderr, "error")
