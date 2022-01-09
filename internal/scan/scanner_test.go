@@ -178,7 +178,6 @@ func TestFileScan(t *testing.T) {
 	testScenarios := []struct {
 		name  string
 		fpath string
-		fcont []byte
 	}{
 		{
 			name: "ExpectedOutClean",

@@ -68,8 +68,10 @@ func (vs VirusScanner) UpdateDB() error {
 	return nil
 }
 
+type scanOutput string
+
 // ScanFile scans a file at a given filepath and returns the output
-func (vs VirusScanner) ScanFile(fpath string) (string, error) {
+func (vs VirusScanner) ScanFile(fpath string) (scanOutput, error) {
 	logFuncName := "VirusScanner.ScanFile"
 
 	cmd := execCommand("clamscan", fpath)
@@ -89,5 +91,5 @@ func (vs VirusScanner) ScanFile(fpath string) (string, error) {
 
 	log.Info().Str("func", logFuncName).Msgf("Scan completed: %.2f secs", duration.Seconds())
 
-	return string(out), nil
+	return scanOutput(out), nil
 }

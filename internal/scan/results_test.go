@@ -1,6 +1,7 @@
 package scan
 
 import (
+	// "fmt"
 	"testing"
 )
 
@@ -36,30 +37,26 @@ Time: 16.342 sec (0 m 16 s)
 Start Date: 2021:12:31 00:09:55
 End Date:   2021:12:31 00:10:12	
 `
-var mockScanResult ScanResult
 
 func TestScanResults(t *testing.T) {
 	testScenarios := []struct {
-		name, input string
-		expectedOut string
+		name, file  string
+		input       scanOutput
+		status      string
+		signature   string
 	}{
 		{
 			name: "ExpectedOutClean",
 			input: mockScannerOutputClean,
-			expectedOut: mockScanResult{
-				Status: "CLEAN",
-				Signature: "",
-				Duration: 18.16,
-			},
+			file: "testfiles/clean.txt",
+			status: "CLEAN",
 		},
 		{
 			name: "ExpectedOutInfected",
 			input: mockScannerOutputInfected,
-			expectedOut: mockScanResult{
-				Status: "INFECTED",
-				Signature: "Win.Test.EICAR_HDB-1",
-				Duration: 16.34,
-			},
+			file: "testfiles/infected.txt",
+			status: "INFECTED",
+			signature: "Win.Test.EICAR_HDB-1",
 		},
 
 	}
@@ -68,11 +65,21 @@ func TestScanResults(t *testing.T) {
 		t.Run(scenario.name, func(t *testing.T) {
 
 			// Given a parsed scan output
-			pr := parseScanOutput(scenario.input)
+			pr := parseScanOutput(scenario.file, scenario.input)
 
-			// 1. ExpectedOut
-			if want, got := scenario.expectedOut, pr; got != want {
-				t.Errorf("wanted `%s`, but got `%s`", want, got)
+			// 1. ExpectedValue: Clean file
+			if want, got := scenario.status, pr.Status; got != want {
+				t.Errorf("wanted `%v`, but got `%v`", want, got)
+			}
+
+			// 2. ExpectedValue: Infected file
+			if want, got := scenario.status, pr.Status; got != want {
+				t.Errorf("wanted `%v`, but got `%v`", want, got)
+			}
+
+			// 3. ExpectedValue: Infected file virus signature
+			if  want, got := scenario.signature, pr.Signature; got != want {
+				t.Errorf("wanted signature `%v`, but got `%v`", want, got)
 			}
 		})
 	}
