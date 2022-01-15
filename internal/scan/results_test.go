@@ -44,6 +44,7 @@ func TestScanResults(t *testing.T) {
 		input       scanOutput
 		status      string
 		signature   string
+		duration    float64
 	}{
 		{
 			name: "ExpectedOutClean",
@@ -56,9 +57,21 @@ func TestScanResults(t *testing.T) {
 			input: mockScannerOutputInfected,
 			file: "testfiles/infected.txt",
 			status: "INFECTED",
+		},
+		{
+			name: "ExpectedOutInfectedSignature",
+			input: mockScannerOutputInfected,
+			file: "testfiles/infected.txt",
+			status: "INFECTED",
 			signature: "Win.Test.EICAR_HDB-1",
 		},
-
+		{
+			name: "ExpectedOutDuration",
+			input: mockScannerOutputClean,
+			file: "testfiles/clean.txt",
+			status: "CLEAN",
+			duration: 18.16,
+		},
 	}
 
 	for _, scenario := range testScenarios {
@@ -78,8 +91,13 @@ func TestScanResults(t *testing.T) {
 			}
 
 			// 3. ExpectedValue: Infected file virus signature
-			if  want, got := scenario.signature, pr.Signature; got != want {
+			if  want, got := scenario.signature, pr.Signature; scenario.name == "ExpectedOutInfectedSignature" && got != want {
 				t.Errorf("wanted signature `%v`, but got `%v`", want, got)
+			}
+
+			// 4. ExpectedValue: Scan Duration
+			if want, got := scenario.duration, pr.Duration; scenario.name == "ExpectedOutDuration" && got != want {
+				t.Errorf("wanted duration `%v`, but got `%v`", want, got)
 			}
 		})
 	}

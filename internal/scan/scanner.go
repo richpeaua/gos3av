@@ -71,7 +71,7 @@ func (vs VirusScanner) UpdateDB() error {
 type scanOutput string
 
 // ScanFile scans a file at a given filepath and returns the output
-func (vs VirusScanner) ScanFile(fpath string) (scanOutput, error) {
+func (vs VirusScanner) ScanFile(fpath string) (*ScanResult, error) {
 	logFuncName := "VirusScanner.ScanFile"
 
 	cmd := execCommand("clamscan", fpath)
@@ -86,10 +86,12 @@ func (vs VirusScanner) ScanFile(fpath string) (scanOutput, error) {
 	// clamscan exits with exitcode 1 if infected file is found so exitcode 1 should not be considered an error
 	if err != nil && exitCode > 1 {
 		log.Error().Str("func", logFuncName).AnErr("ScanFileErr", err).Msg("")
-		return "", err
+		return nil, err
 	}
 
 	log.Info().Str("func", logFuncName).Msgf("Scan completed: %.2f secs", duration.Seconds())
 
-	return scanOutput(out), nil
+	results := parseScanOutput(fpath, scanOutput(out))
+
+	return &results, nil
 }

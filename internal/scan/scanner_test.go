@@ -203,19 +203,27 @@ func TestFileScan(t *testing.T) {
 			defer func(){ execCommand = exec.Command }()
 
 			// 2. Scan file
-			output, scanerr := tvs.ScanFile(scenario.fpath)
+			results, scanerr := tvs.ScanFile(scenario.fpath)
 			
-
 			// 3. ExpectedOutClean
-			if output == "" && scanerr == nil {
-				t.Errorf("expected output, but got `%v`", output)
+			if !isScanResult(results)  && scanerr == nil {
+				t.Errorf("expected `*scan.ScanResult`, but got `%T`", results)
 			}
 
 			// 4. ExpectedErr
 			if scenario.name == "ExpectedErr" && scanerr == nil {
-				t.Errorf("expected an error, but got `%v`", scanerr)
+				t.Errorf("expected an error, but got `%T`", scanerr)
 			}	
 
 		})
+	}
+}
+
+func isScanResult(t interface{}) bool {
+	switch t.(type) {
+	case *ScanResult:
+		return true
+	default:
+		return false
 	}
 }
