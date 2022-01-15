@@ -174,6 +174,45 @@ func TestUpdateDB(t *testing.T) {
 
 }
 
+func TestDownloadDB(t *testing.T) {
+	testScenarios := []struct {
+		name 	    string
+		dbFiles     int
+		expectedErr string
+	}{
+		{
+			name: "ExpectedPass",
+			dbFiles: 3,
+		},
+		{
+			name: "ExpectedErr",
+			dbFiles: 0,
+			expectedErr: "virus scan database files are missing!",
+		},
+	}
+
+	tvs := NewVirusScanner()
+
+	for _, scenario := range testScenarios {
+		// Setup
+		execCommand = fakeExecCommandFreshclam
+		defer func(){ execCommand = exec.Command }()
+		
+		// 1. DB Download
+		err := tvs.DownloadDB()
+
+		// 2. ExpectedPass
+		if scenario.name == "ExpectedPass" && err != nil {
+			t.Errorf("expected pass, but got error: `%v`", err)
+		}
+
+		// 3. ExpectedErr
+		if want, got := scenario.expectedErr, err.Error(); got != want {
+			t.Errorf("expected error `%v`, but got `%v`", want, got)
+		}
+	}
+}
+
 func TestFileScan(t *testing.T) {
 	testScenarios := []struct {
 		name  string
