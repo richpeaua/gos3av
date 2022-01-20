@@ -200,6 +200,10 @@ func TestDownloadDB(t *testing.T) {
 		
 		// 1. DB Download
 		err := tvs.DownloadDB()
+		errString := ""
+		if err != nil {
+			errString = err.Error()
+		}
 
 		// 2. ExpectedPass
 		if scenario.name == "ExpectedPass" && err != nil {
@@ -207,7 +211,7 @@ func TestDownloadDB(t *testing.T) {
 		}
 
 		// 3. ExpectedErr
-		if want, got := scenario.expectedErr, err.Error(); got != want {
+		if want, got := scenario.expectedErr, errString; got != want {
 			t.Errorf("expected error `%v`, but got `%v`", want, got)
 		}
 	}

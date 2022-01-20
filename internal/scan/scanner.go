@@ -68,6 +68,10 @@ func (vs VirusScanner) UpdateDB() error {
 	return nil
 }
 
+func (vs VirusScanner) DownloadDB() error {
+	return nil
+}
+
 type scanOutput string
 
 // ScanFile scans a file at a given filepath and returns the output
